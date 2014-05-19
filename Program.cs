@@ -12,7 +12,7 @@ namespace scandir
 		public static void Main(string[] args)
 		{
 			Console.WriteLine("╔═════════╗");
-			Console.WriteLine("║ scandir ║");
+			Console.WriteLine("║ scandir ║ Version 1.0");
 			Console.WriteLine("╚═════════╝");
 			if (args.Length == 0)
 				printHelp();
@@ -24,10 +24,20 @@ namespace scandir
 				if (abouters.Any(args[0].Contains))
 					printInfo();
 				
-			}
-			else {
+			} else if ( args.Length == 2 ){
 				Console.Write("Scanning Directory...");
-				if ( processArgs(args) )
+				if ( processArgs(args[0], args[1]) )
+					Console.WriteLine("DONE");
+				if ( LOGS.Count > 0 ){
+					Console.Write("Files Found! Printing Results below...\n--------------------------------------------------------------------------------");
+					Console.WriteLine("filename,fileowner,usersid,lastmodified");
+					foreach (string s in LOGS)
+						Console.WriteLine(s);
+					Console.WriteLine("--------------------------------------------------------------------------------\n");
+				} else Console.WriteLine("No files found.");	
+			} else {
+				Console.Write("Scanning Directory...");
+				if ( processArgs(args[0], args[1], args[2]) )
 					Console.WriteLine("DONE");
 				if ( LOGS.Count > 0 ){
 					Console.Write("Files Found! Writing to log...");
@@ -41,17 +51,17 @@ namespace scandir
 			}
 		}
 		
-		static bool processArgs(string[] args)
+		static bool processArgs(string searchPattern, string startDir, string outputPath = null)
 		{
-			bool dirPass = Directory.Exists(args[1]),
-				 logPass = !File.Exists(args[2]);
+			bool dirPass = Directory.Exists(startDir),
+			logPass = (outputPath == null)? true : !File.Exists(outputPath);
 			
 			if ( !dirPass )
-				Console.WriteLine("\n[ERROR] Invalid Directory: \"" + args[1] + "\" is not a directory.");
+				Console.WriteLine("\n[ERROR] Invalid Directory: \"" + startDir + "\" is not a directory.");
 			if ( !logPass )
-				Console.WriteLine("\n[ERROR] Invalid Path: \"" + args[2] + "\" already exists.");
+				Console.WriteLine("\n[ERROR] Invalid Path: \"" + outputPath + "\" already exists.");
 			if ( dirPass && logPass ){
-				string[] files = Directory.GetFiles(args[1],args[0], SearchOption.AllDirectories);
+				string[] files = Directory.GetFiles(startDir,searchPattern, SearchOption.AllDirectories);
 				foreach ( string file in files ){
 					var fs = File.GetAccessControl(file);
 					string message = file + "," + //filepath
@@ -69,10 +79,10 @@ namespace scandir
 		static void printHelp()
 		{
 			Console.WriteLine("To find out more info about scandir, run \"scandir about\".\n\n");
-			Console.WriteLine("Syntax: scandir <search> <dir> <output>\n\nArguments:\n");
+			Console.WriteLine("Syntax: scandir <search> <dir> [output]\n\nArguments:\n");
 			Console.WriteLine("<search>  A string search pattern to use when scanning a directory where * is a wildcard. For example, to scan for all exe files, use \"*.exe\" as your search filter.\n");
 			Console.WriteLine("<dir>  The directory to start to scan in.\n");
-			Console.WriteLine("<output>  The location to ouput a log file if results are found. Results are saved in a CSV format.\n");
+			Console.WriteLine("[output]  OPTIONAL, The location to ouput a log file if results are found. Results are saved in a CSV format.\n");
 		}
 				
 		static void printInfo()
