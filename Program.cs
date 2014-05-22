@@ -58,12 +58,13 @@ namespace scandir
 		
 		static bool processArgs(string searchPattern, string startDir = null, string outputPath = null)
 		{
-			bool dirPass = Directory.Exists(startDir),
-			logPass = (outputPath == null)? true : !File.Exists(outputPath);
 			
 			if ( startDir == "." || startDir == null )
 				startDir = Directory.GetCurrentDirectory();
 			
+			bool dirPass = Directory.Exists(startDir),
+			logPass = (outputPath == null)? true : !File.Exists(outputPath);
+						
 			if ( !dirPass )
 				Console.WriteLine("\n[ERROR] Invalid Directory: \"" + startDir + "\" is not a directory.");
 			if ( !logPass )
