@@ -11,43 +11,48 @@ namespace scandir
 		public static List<string> LOGS = new List<string>();
 		public static void Main(string[] args)
 		{
-			Console.WriteLine("╔═════════╗");
-			Console.WriteLine("║ scandir ║ Version 1.0");
-			Console.WriteLine("╚═════════╝");
-			if (args.Length == 0)
-				printHelp();
-			else if (args.Length == 1){
-				string[] helpers = {"/?", "help", "?"};
-				string[] abouters = {"about", "/!", "!", "info"};
-				if (helpers.Any(args[0].Contains))
+			Console.Clear();
+			try {
+				Console.WriteLine("╔═════════╗");
+				Console.WriteLine("║ scandir ║ Version 1.0.2014522");
+				Console.WriteLine("╚═════════╝");
+				if (args.Length == 0)
 					printHelp();
-				if (abouters.Any(args[0].Contains))
-					printInfo();
-				
-			} else if ( args.Length == 2 ){
-				Console.Write("Scanning Directory...");
-				if ( processArgs(args[0], args[1]) )
-					Console.WriteLine("DONE");
-				if ( LOGS.Count > 0 ){
-					Console.Write("Files Found! Printing Results below...\n--------------------------------------------------------------------------------");
-					Console.WriteLine("filename,fileowner,usersid,lastmodified");
-					foreach (string s in LOGS)
-						Console.WriteLine(s);
-					Console.WriteLine("--------------------------------------------------------------------------------\n");
-				} else Console.WriteLine("No files found.");	
-			} else {
-				Console.Write("Scanning Directory...");
-				if ( processArgs(args[0], args[1], args[2]) )
-					Console.WriteLine("DONE");
-				if ( LOGS.Count > 0 ){
-					Console.Write("Files Found! Writing to log...");
-					StreamWriter sw = new StreamWriter(@"" + args[2]);
-					sw.WriteLine("filename,fileowner,usersid,lastmodified");
-					foreach (string s in LOGS)
-						sw.WriteLine(s);
-					sw.Close();
-					Console.WriteLine("DONE");
-				} else Console.WriteLine("No files found.");
+				else if (args.Length == 1){
+					string[] helpers = {"/?", "help", "?"};
+					string[] abouters = {"about", "/!", "!", "info"};
+					if (helpers.Any(args[0].Contains))
+						printHelp();
+					if (abouters.Any(args[0].Contains))
+						printInfo();
+					
+				} else if ( args.Length == 2 ){
+					Console.Write("Scanning Directory...");
+					if ( processArgs(args[0], args[1]) )
+						Console.WriteLine("DONE");
+					if ( LOGS.Count > 0 ){
+						Console.Write("Files Found! Printing Results below...\n--------------------------------------------------------------------------------");
+						Console.WriteLine("filename,fileowner,usersid,lastmodified");
+						foreach (string s in LOGS)
+							Console.WriteLine(s);
+						Console.WriteLine("--------------------------------------------------------------------------------\n");
+					} else Console.WriteLine("No files found.");	
+				} else {
+					Console.Write("Scanning Directory...");
+					if ( processArgs(args[0], args[1], args[2]) )
+						Console.WriteLine("DONE");
+					if ( LOGS.Count > 0 ){
+						Console.Write("Files Found! Writing to log...");
+						StreamWriter sw = new StreamWriter(@"" + args[2]);
+						sw.WriteLine("filename,fileowner,usersid,lastmodified");
+						foreach (string s in LOGS)
+							sw.WriteLine(s);
+						sw.Close();
+						Console.WriteLine("DONE");
+					} else Console.WriteLine("No files found.");
+				}
+			} catch (Exception e){
+				Console.WriteLine("CRITICAL ERROR! Please report the following below to the nearest developer:\n\n" +e.ToString() + "\n\nAborting program....");
 			}
 		}
 		
