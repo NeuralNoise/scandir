@@ -56,10 +56,13 @@ namespace scandir
 			}
 		}
 		
-		static bool processArgs(string searchPattern, string startDir, string outputPath = null)
+		static bool processArgs(string searchPattern, string startDir = null, string outputPath = null)
 		{
 			bool dirPass = Directory.Exists(startDir),
 			logPass = (outputPath == null)? true : !File.Exists(outputPath);
+			
+			if ( startDir == "." || startDir == null )
+				startDir = Directory.GetCurrentDirectory();
 			
 			if ( !dirPass )
 				Console.WriteLine("\n[ERROR] Invalid Directory: \"" + startDir + "\" is not a directory.");
@@ -86,7 +89,7 @@ namespace scandir
 			Console.WriteLine("To find out more info about scandir, run \"scandir about\".\n\n");
 			Console.WriteLine("Syntax: scandir <search> <dir> [output]\n\nArguments:\n");
 			Console.WriteLine("<search>  A string search pattern to use when scanning a directory where * is a wildcard. For example, to scan for all exe files, use \"*.exe\" as your search filter.\n");
-			Console.WriteLine("<dir>  The directory to start to scan in.\n");
+			Console.WriteLine("<dir>  The directory to start to scan in. You may use the period character, '.' to denote the current directory.\n");
 			Console.WriteLine("[output]  OPTIONAL, The location to ouput a log file if results are found. Results are saved in a CSV format.\n");
 		}
 				
